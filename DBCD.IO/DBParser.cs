@@ -132,8 +132,11 @@ namespace DBCD.IO
         /// <summary>
         /// Write records to a new .db2 file.
         /// </summary>
-        public void WriteRecords<T>(IDictionary<int, T> storage, string filename) where T : class, new() =>
-            WriteRecords(storage, File.Open(filename, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite));
+        public void WriteRecords<T>(IDictionary<int, T> storage, string filename) where T : class, new()
+        {
+            using var stream = File.Open(filename, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+            WriteRecords(storage, stream);
+        }
 
         /// <summary>
         /// Write records to a new .db2 file.

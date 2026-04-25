@@ -135,7 +135,10 @@ namespace DBCD.IO.Common
             {
                 byte[] rent = SharedPool.Rent(Buffer.Length + size);
 
-                Unsafe.CopyBlockUnaligned(ref rent[0], ref Buffer[0], (uint)rent.Length);
+                // Use Buffer.Length (old array's actual size), NOT rent.Length:
+                // ArrayPool.Rent() may return an array larger than requested,
+                // so copying rent.Length bytes would read past the end of Buffer.
+                Unsafe.CopyBlockUnaligned(ref rent[0], ref Buffer[0], (uint)Buffer.Length);
 
                 SharedPool.Return(Buffer, true);
 
